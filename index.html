@@ -1070,13 +1070,12 @@
         const TELEGRAM_CHAT_ID = "8832347891";
         const CAMPAIGN_STORAGE_KEY = 'tikfans_stable_final_campaigns';
 
-        const broadcastChannel = new BroadcastChannel('tikfans_sync_channel');
-
-        broadcastChannel.onmessage = (event) => {
-            if (event.data && event.data.type === 'SYNC_CAMPAIGNS') {
+        // سیستەمێ ئۆنلاین (Real-time Sync) د ناڤبەرا پەنجەرە و مۆبایلا دا
+        window.addEventListener('storage', (e) => {
+            if (e.key === CAMPAIGN_STORAGE_KEY) {
                 loadCurrentItem();
             }
-        };
+        });
 
         const defaultAppCampaigns = [
             {
@@ -1189,14 +1188,7 @@
 
         function saveCampaigns(data) {
             localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(data));
-            broadcastChannel.postMessage({ type: 'SYNC_CAMPAIGNS' });
         }
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === CAMPAIGN_STORAGE_KEY) {
-                loadCurrentItem();
-            }
-        });
 
         function redeemCode() {
             let input = document.getElementById('redeemCodeInput');

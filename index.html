@@ -1070,25 +1070,22 @@
         const TELEGRAM_CHAT_ID = "8832347891";
         const CAMPAIGN_STORAGE_KEY = 'tikfans_stable_final_campaigns';
 
-        // سیستەمێ ئۆنلاین (Real-time Sync) د ناڤبەرا پەنجەرە و مۆبایلا دا
+        // سیستەمێ ئۆنلاین (Real-time Sync) بۆ پەیوەندیا د ناڤبەرا مۆبایل و پەنجەرەیان
+        const broadcastChannel = new BroadcastChannel('tikfans_live_sync');
+        broadcastChannel.onmessage = (event) => {
+            if (event.data && event.data.type === 'SYNC') {
+                loadCurrentItem();
+            }
+        };
+
         window.addEventListener('storage', (e) => {
             if (e.key === CAMPAIGN_STORAGE_KEY) {
                 loadCurrentItem();
             }
         });
 
-        const defaultAppCampaigns = [
-            {
-                id: 1001,
-                username: "@zaakho_ai",
-                type: "follower",
-                link: "https://www.tiktok.com/@zaakho_ai",
-                img: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400",
-                reward: 5,
-                remaining: 50,
-                completedBy: []
-            }
-        ];
+        // لێرەدا مە کەمپینێن دەستپێکێ کرە سفر (پاقژ)
+        const defaultAppCampaigns = [];
 
         const REDEEM_CODES_DATABASE = {
             "T0RSE07501": 99999999, // کۆدێ تایبەتێ تە
@@ -1188,6 +1185,7 @@
 
         function saveCampaigns(data) {
             localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(data));
+            broadcastChannel.postMessage({ type: 'SYNC' });
         }
 
         function redeemCode() {

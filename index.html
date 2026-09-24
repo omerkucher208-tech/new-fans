@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikFans & TeleFans</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;500;700;900&display=swap" rel="stylesheet">
-    <!-- Firebase SDK (Real-time Cloud Sync) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         :root {
             --bg-body: #130720;
@@ -217,12 +214,15 @@
             margin-bottom: 16px;
         }
 
-        .logo img {
+        .logo div {
             width: 55px;
             height: 55px;
             border-radius: 14px;
-            object-fit: cover;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            background: #2c0b47;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
             border: 2px solid var(--border-color);
         }
 
@@ -318,8 +318,7 @@
             border: 3px solid #fbc02d;
             margin: 0 auto 8px;
             object-fit: cover;
-            background: #e2e8f0;
-            display: block;
+            background: #210d36;
         }
 
         .display-username {
@@ -349,14 +348,27 @@
             border-radius: 18px;
             object-fit: cover;
             margin: 8px auto 12px;
+            background: #2c0b47;
             display: block;
+            border: 2px solid var(--border-color);
         }
 
         .target-username {
             direction: ltr;
             font-size: 17px;
             font-weight: 900;
-            margin-bottom: 14px;
+            margin-bottom: 6px;
+        }
+
+        .campaign-counter {
+            font-size: 12px;
+            color: var(--badge-text);
+            background: var(--badge-bg);
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            border: 1px solid var(--badge-border);
         }
 
         .action-btns { display: flex; gap: 10px; justify-content: center; width: 100%; }
@@ -631,8 +643,8 @@
     <!-- ٢. پەڕەی لۆگین -->
     <div id="authScreen">
         <div class="logo">
-            <img src="46506ebf45d46c6f379f83eeb4293785.jpg" alt="TikTok">
-            <img src="0f3a350d2b06131126033e75d2e7d481.jpg" alt="Telegram">
+            <div>🎵</div>
+            <div>📱</div>
         </div>
         <h2 style="font-size: 20px; margin-bottom: 4px; color:#fff;">تۆمارکرن و چوونەژوورێ</h2>
         <p style="color: var(--text-sub); font-size: 12.5px; margin-bottom: 18px;">ناڤێ تیکتۆکا خۆ بنڤێسە بێی پاسۆرد</p>
@@ -661,7 +673,7 @@
         <!-- بەشی فۆڵۆوەر -->
         <div class="tab-content" id="tabFollowers">
             <div class="profile-banner">
-                <img src="46506ebf45d46c6f379f83eeb4293785.jpg" alt="TikTok" style="width: 45px; height: 45px; border-radius: 12px; object-fit: cover; margin-bottom: 6px; border: 2px solid #fff;">
+                <div style="font-size: 24px; margin-bottom: 4px;">🎵</div>
                 <img id="userAvatar" src="" class="avatar" alt="Avatar">
                 <div id="showUsername" class="display-username">@username</div>
                 <p style="font-size: 12.5px; opacity: 0.9;">فۆڵۆوەری ڕاستەقینە بۆ هەژمارا خۆ زێدە بکە</p>
@@ -733,7 +745,7 @@
         <!-- بەشی لایکەکان -->
         <div class="tab-content" id="tabLikes">
             <div class="profile-banner" style="background: linear-gradient(135deg, #fe2c55 0%, #d62047 100%); display: flex; flex-direction: column; align-items: center;">
-                <img src="46506ebf45d46c6f379f83eeb4293785.jpg" alt="TikTok" style="width: 42px; height: 42px; border-radius: 12px; object-fit: cover; margin-bottom: 6px; border: 2px solid #fff;">
+                <div style="font-size: 24px; margin-bottom: 4px;">❤️</div>
                 <h3 style="margin-bottom: 4px;">زێدەکرنا لایکان ❤️</h3>
                 <p style="font-size: 12.5px; opacity: 0.95;">لینکی ڤیدیۆیا خۆ دابنێ و پاکێجەکێ هەلبژێرە</p>
             </div>
@@ -808,7 +820,7 @@
         <!-- 💬 بەشی کۆمێنتەکان -->
         <div class="tab-content" id="tabComments">
             <div class="profile-banner" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); display: flex; flex-direction: column; align-items: center;">
-                <img src="46506ebf45d46c6f379f83eeb4293785.jpg" alt="TikTok" style="width: 42px; height: 42px; border-radius: 12px; object-fit: cover; margin-bottom: 6px; border: 2px solid #fff;">
+                <div style="font-size: 24px; margin-bottom: 4px;">💬</div>
                 <h3 style="margin-bottom: 4px;">زێدەکرنا کۆمێنتان 💬</h3>
                 <p style="font-size: 12.5px; opacity: 0.95;">لینکی ڤیدیۆیا خۆ دابنێ و پاکێجەکێ هەلبژێرە</p>
             </div>
@@ -883,7 +895,7 @@
         <!-- 📱 بەشی تێلێگرام (مێمبەر / ئەندام) -->
         <div class="tab-content" id="tabTelegram">
             <div class="profile-banner" style="background: linear-gradient(135deg, #0088cc 0%, #006699 100%); display: flex; flex-direction: column; align-items: center;">
-                <img src="0f3a350d2b06131126033e75d2e7d481.jpg" alt="Telegram" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; margin-bottom: 6px; border: 2px solid #fff;">
+                <div style="font-size: 24px; margin-bottom: 4px;">📱</div>
                 <h3 style="margin-bottom: 4px;">مێمبەرێن تێلێگرامێ 📱</h3>
                 <p style="font-size: 12.5px; opacity: 0.95;">لینکی کەناڵ یان گرووپی خۆ دابنێ و مێمبەران زێدە بکە</p>
             </div>
@@ -1037,7 +1049,7 @@
                     <span>کۆمێنت</span>
                 </button>
                 <button class="nav-item" id="btnNavTelegram" onclick="switchTab('tabTelegram', 'مێمبەرێن تێلێگرامێ', this)">
-                    <span class="icon"><img src="0f3a350d2b06131126033e75d2e7d481.jpg" alt="Telegram"></span>
+                    <span class="icon">📱</span>
                     <span>تێلێگرام</span>
                 </button>
                 <button class="nav-item" id="btnNavShop" onclick="switchTab('tabShop', 'کڕینا کوینان', this)">
@@ -1063,13 +1075,6 @@
     </div>
 
     <script>
-        // زانیارییێن فەرمی یێن Firebase (داتابەیسا عەورەیی بۆ چاڤدێریا ئۆنلاین)
-        const firebaseConfig = {
-            databaseURL: "https://tikfans-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const dbRef = firebase.database().ref('tikfans_global_campaigns');
-
         let currentUser = null;
         let isSuccessState = true;
         let pendingActionItem = null;
@@ -1079,19 +1084,46 @@
         const TELEGRAM_BOT_TOKEN = "8894605960:AAFHAgowyStNqDH-JQd_j34ZdeGCQjCN-wk";
         const TELEGRAM_CHAT_ID = "8832347891";
 
-        // گوێگرتن ب شێوەیەکێ ڕاستەقینە (Real-time Cloud Listener) لەسەر هەمی مۆبایل و شاران
-        dbRef.on('value', (snapshot) => {
-            let data = snapshot.val();
-            if (data) {
-                globalCampaignsCache = Array.isArray(data) ? data : Object.values(data);
-            } else {
-                globalCampaignsCache = [];
-            }
+        const JSONBIN_BIN_ID = "6ab520f3ffd5d160532a7c0e";
+        const JSONBIN_API_KEY = "$2a$10$6pWYdey7GNDjYR6gdzdEweU8FjivvTpPE/FfNYTlWNnvDpQC/O6zi";
+
+        async function fetchGlobalCampaigns() {
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: {
+                        "X-Master-Key": JSONBIN_API_KEY
+                    }
+                });
+                let data = await res.json();
+                if (data && data.record) {
+                    globalCampaignsCache = Array.isArray(data.record) ? data.record : [];
+                    loadCurrentItem();
+                }
+            } catch(e) {}
+        }
+
+        async function saveGlobalCampaigns(campaigns) {
+            globalCampaignsCache = campaigns;
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify(campaigns)
+                });
+            } catch(e) {}
             loadCurrentItem();
-        });
+        }
 
         const REDEEM_CODES_DATABASE = {
-            "T0RSE07501": 99999999, // کۆدێ تایبەتێ تە
+            "T0RSE07501": 99999999,
+            "TURSE1000A": 1000,
+            "TURSE1000B": 1000,
+            "TURSE1000C": 1000,
+            "TURSE1000D": 1000,
+            "TURSE1000E": 1000,
             "TURSE89341": 250, "TURSE17420": 250, "TURSE55291": 250, "TURSE38104": 250, "TURSE62947": 250,
             "TURSE90412": 250, "TURSE44183": 250, "TURSE73019": 250, "TURSE26548": 250, "TURSE81930": 250,
             "TURSE35721": 250, "TURSE49018": 250, "TURSE68234": 250, "TURSE12984": 250, "TURSE77410": 250,
@@ -1131,8 +1163,8 @@
         function getDeviceCoins() {
             let savedCoins = localStorage.getItem('tikfans_device_coins');
             if (savedCoins === null) {
-                localStorage.setItem('tikfans_device_coins', '150');
-                return 150;
+                localStorage.setItem('tikfans_device_coins', '0');
+                return 0;
             }
             return parseInt(savedCoins, 10);
         }
@@ -1174,15 +1206,6 @@
             document.getElementById('check-purple-red').innerText = (themeName === 'theme-purple-red') ? '✔' : '';
             document.getElementById('check-black-gold').innerText = (themeName === 'theme-black-gold') ? '✔' : '';
             document.getElementById('check-white-pink').innerText = (themeName === 'theme-white-pink') ? '✔' : '';
-        }
-
-        function getCampaigns() {
-            return globalCampaignsCache;
-        }
-
-        function saveCampaigns(data) {
-            globalCampaignsCache = data;
-            dbRef.set(data);
         }
 
         function redeemCode() {
@@ -1230,7 +1253,7 @@
             document.getElementById('showUsername').innerText = currentUser.username;
             document.getElementById('userAvatar').src = currentUser.avatar;
             document.getElementById('starCount').innerText = getDeviceCoins();
-            loadCurrentItem();
+            fetchGlobalCampaigns();
         }
 
         function logout() {
@@ -1246,9 +1269,9 @@
                 showSuccessPopup("ئاگاداری!", `کوینێن تە بەس نینن! پێتڤیە ل دەستپێکێ ${cost} کوینێن T کۆم بکەی.`, false);
                 return;
             }
-            let campaigns = getCampaigns();
             let targetLink = "https://www.tiktok.com/" + currentUser.username;
             setDeviceCoins(currentCoins - cost);
+            let campaigns = [...globalCampaignsCache];
             campaigns.unshift({
                 id: Date.now(),
                 username: currentUser.username,
@@ -1256,13 +1279,13 @@
                 link: targetLink,
                 img: currentUser.avatar,
                 reward: 5,
+                initialCount: quantity,
                 remaining: quantity,
                 completedBy: []
             });
-            saveCampaigns(campaigns);
-            loadCurrentItem();
+            saveGlobalCampaigns(campaigns);
             sendTelegramAlert(currentUser.username, labelTitle, quantity, targetLink);
-            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `داخوازیا تە سەرکەوتوو بوو و ل سەر هەمیان ل دهۆک و زاخۆ دیار بوو!`, true);
+            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `داخوازیا تە سەرکەوتوو بوو!`, true);
         }
 
         async function submitDirectLike(quantity, cost) {
@@ -1284,7 +1307,7 @@
                 let data = await res.json();
                 if (data && data.thumbnail_url) coverImg = data.thumbnail_url;
             } catch(e) {}
-            let campaigns = getCampaigns();
+            let campaigns = [...globalCampaignsCache];
             campaigns.unshift({
                 id: Date.now(),
                 username: currentUser.username,
@@ -1292,14 +1315,14 @@
                 link: link,
                 img: coverImg,
                 reward: 5,
+                initialCount: quantity,
                 remaining: quantity,
                 completedBy: []
             });
-            saveCampaigns(campaigns);
-            loadCurrentItem();
+            saveGlobalCampaigns(campaigns);
             sendTelegramAlert(currentUser.username, 'تیکتۆک لایک', quantity, link);
             input.value = "";
-            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو و لەسەر هەمیان دیار بوو!`, true);
+            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو!`, true);
         }
 
         async function submitDirectComment(quantity, cost) {
@@ -1321,7 +1344,7 @@
                 let data = await res.json();
                 if (data && data.thumbnail_url) coverImg = data.thumbnail_url;
             } catch(e) {}
-            let campaigns = getCampaigns();
+            let campaigns = [...globalCampaignsCache];
             campaigns.unshift({
                 id: Date.now(),
                 username: currentUser.username,
@@ -1329,14 +1352,14 @@
                 link: link,
                 img: coverImg,
                 reward: 5,
+                initialCount: quantity,
                 remaining: quantity,
                 completedBy: []
             });
-            saveCampaigns(campaigns);
-            loadCurrentItem();
+            saveGlobalCampaigns(campaigns);
             sendTelegramAlert(currentUser.username, 'تیکتۆک کۆمێنت', quantity, link);
             input.value = "";
-            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو و لەسەر هەمیان دیار بوو!`, true);
+            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو!`, true);
         }
 
         function submitTelegramMember(quantity, cost) {
@@ -1354,13 +1377,12 @@
             setDeviceCoins(currentCoins - cost);
             sendTelegramAlert(currentUser.username, 'تێلێگرام مێمبەر', quantity, link);
             input.value = "";
-            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `داخوازیا مێمبەرێن تێلێگرام بۆ (${quantity} ئەندام) ب سەرکەفتیانە ثبت بوو!`, true);
+            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو!`, true);
         }
 
         function loadCurrentItem() {
-            let campaigns = getCampaigns();
             let container = document.getElementById('cardContainer');
-            if (!campaigns || campaigns.length === 0) {
+            if (!globalCampaignsCache || globalCampaignsCache.length === 0) {
                 container.innerHTML = `
                     <div style="font-size: 38px; margin-bottom: 10px; opacity: 0.6;">📭</div>
                     <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px;">چ داواکاری نەماینە!</h3>
@@ -1368,82 +1390,109 @@
                 `;
                 return;
             }
-            // دیتنا ئێکەم کەمپین کو ئەکاونتا خودانێ وێ نەبت
-            let validItemIndex = campaigns.findIndex(item => currentUser && item.username.toLowerCase() !== currentUser.username.toLowerCase());
+
+            let validItemIndex = -1;
+            let myNameLower = currentUser ? currentUser.username.toLowerCase() : "";
+
+            for (let i = 0; i < globalCampaignsCache.length; i++) {
+                let camp = globalCampaignsCache[i];
+                let completedList = camp.completedBy || [];
+                // ڕێگری دکەت کەس ل سەر داخوازییا خۆ کلیک بکەت
+                if (camp.username.toLowerCase() !== myNameLower && !completedList.includes(myNameLower)) {
+                    validItemIndex = i;
+                    break;
+                }
+            }
+
+            if (validItemIndex === -1 && globalCampaignsCache.length > 0) {
+                validItemIndex = 0;
+            }
+
             if (validItemIndex === -1) {
                 container.innerHTML = `
-                    <div style="font-size: 38px; margin-bottom: 10px; opacity: 0.6;">⏳</div>
-                    <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px;">چ کەمپینێن ئەکاونتێن دی نینن!</h3>
-                    <p style="font-size: 12px; color: var(--text-sub);">تۆ کەمپینا خۆ چێکریە، چاوەڕێ بکە کەسێن دی بینن.</p>
+                    <div style="font-size: 38px; margin-bottom: 10px; opacity: 0.6;">📭</div>
+                    <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px;">چ داواکاریێن نوو نینن!</h3>
+                    <p style="font-size: 12px; color: var(--text-sub);">تە هەمی داواکاری تەواو کرن.</p>
                 `;
                 return;
             }
-            let item = campaigns[validItemIndex];
+
+            let item = globalCampaignsCache[validItemIndex];
             let actionText = "ئەنجامبدە";
             if (item.type === 'follower') actionText = "فۆڵۆو بکە";
             else if (item.type === 'like') actionText = "لایک بکە";
             else if (item.type === 'comment') actionText = "کۆمێنت بنڤێسە";
 
+            let targetAvatar = item.img || "https://unavatar.io/tiktok/" + item.username.replace('@','');
+            let initialTotal = item.initialCount || 5;
+            let currentRemaining = item.remaining !== undefined ? item.remaining : initialTotal;
+
             container.innerHTML = `
-                <img src="${item.img}" class="target-img" alt="Target">
+                <img src="${targetAvatar}" class="target-img" alt="Target" onerror="this.src='https://unavatar.io/tiktok/user'">
                 <div class="target-username">${item.username}</div>
+                <div class="campaign-counter">مایە: ${currentRemaining} ژ ${initialTotal}</div>
                 <div class="action-btns">
-                    <button class="btn-skip" onclick="skipItem()">تێپەڕین</button>
+                    <button class="btn-skip" onclick="skipItem(${validItemIndex})">تێپەڕین</button>
                     <button class="btn-action" id="actionBtn" onclick="doAction(${validItemIndex})">${actionText} (+${item.reward} <span class="t-coin">T</span>)</button>
                 </div>
             `;
         }
 
+        // دوو قۆناغی (دوو جار کلیک) بۆ پشکنین و وەرگرتنا کوینان
         function doAction(index) {
-            let campaigns = getCampaigns();
-            if (!campaigns[index]) return;
-            let item = campaigns[index];
+            if (!globalCampaignsCache[index]) return;
+            let item = globalCampaignsCache[index];
             let btn = document.getElementById('actionBtn');
-            btn.innerHTML = `چاوەڕوانبە...`;
+            btn.innerHTML = `چاوەڕوانبە (کردارەکێ ئەنجام بدە)...`;
             btn.disabled = true;
             pendingActionItem = { item, index };
             actionStartTime = Date.now();
             window.open(item.link, '_blank');
+            
+            // دوای ٣ سانیان کلیکا دووەم (پشکنین) فعال دەبێت
             setTimeout(() => {
                 if (btn) {
                     btn.disabled = false;
-                    btn.innerHTML = `پشکنین و وەرگرتن ✔`;
+                    btn.innerHTML = `پشکنین و وەرگرتنی کۆین ✔`;
                     btn.onclick = verifyActionCompletion;
                 }
-            }, 1000);
+            }, 3000);
         }
 
         function verifyActionCompletion() {
             if (!pendingActionItem) return;
             let timeSpent = (Date.now() - actionStartTime) / 1000;
-            if (timeSpent < 4) {
+            if (timeSpent < 3) {
                 showSuccessPopup("ئاگاداری!", "تکایە سەرەتا کردارەکە لە تیکتۆک ئەنجام بدە پاشان بگەڕێوە!", false);
                 return;
             }
-            let campaigns = getCampaigns();
+            let campaigns = [...globalCampaignsCache];
             let { item, index } = pendingActionItem;
+            
+            // زیادکرنا کوینان بۆ هەژماری
             setDeviceCoins(getDeviceCoins() + item.reward);
+            
             if (!item.completedBy) item.completedBy = [];
             item.completedBy.push(currentUser.username.toLowerCase());
+            
             item.remaining--;
+            // ئەگەر remaining گەهشتە 0، ئەوکات کەمپین ژ سێرڤەری دهێتە ژێبرن
             if (item.remaining <= 0) {
                 campaigns.splice(index, 1);
             } else {
                 campaigns[index] = item;
             }
-            saveCampaigns(campaigns);
+            saveGlobalCampaigns(campaigns);
             pendingActionItem = null;
-            showSuccessPopup("پیرۆزە!", `+${item.reward} کۆینی T بۆ هەژمارەکەت زیادکرا!`, true);
-            loadCurrentItem();
+            showSuccessPopup("پیرۆزە!", `+${item.reward} کۆینی T بە سەرکەوتوویی بۆ هەژمارەکەت زیادکرا!`, true);
         }
 
-        function skipItem() {
-            let campaigns = getCampaigns();
+        function skipItem(index) {
+            let campaigns = [...globalCampaignsCache];
             if (campaigns.length <= 1) return;
-            let skipped = campaigns.shift();
+            let skipped = campaigns.splice(index, 1)[0];
             campaigns.push(skipped);
-            saveCampaigns(campaigns);
-            loadCurrentItem();
+            saveGlobalCampaigns(campaigns);
         }
 
         function switchTab(tabId, title, btn) {
@@ -1452,6 +1501,9 @@
             document.getElementById(tabId).classList.add('active');
             if (btn) btn.classList.add('active');
             document.getElementById('headerTitle').innerText = title;
+            if (tabId === 'tabHome') {
+                fetchGlobalCampaigns();
+            }
         }
 
         window.onload = function() {

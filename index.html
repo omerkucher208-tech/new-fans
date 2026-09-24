@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikFans & TeleFans</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <!-- Firebase SDK (Real-time Cloud Sync) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         :root {
             --bg-body: #130720;
@@ -534,7 +537,6 @@
             width: 100%;
         }
 
-        /* شریتی خوارەوە (Bottom Nav) یا پاقژ و جوان */
         .bottom-nav-wrapper {
             position: fixed;
             bottom: 8px;
@@ -1061,31 +1063,32 @@
     </div>
 
     <script>
+        // زانیارییێن فەرمی یێن Firebase (داتابەیسا عەورەیی بۆ چاڤدێریا ئۆنلاین)
+        const firebaseConfig = {
+            databaseURL: "https://tikfans-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const dbRef = firebase.database().ref('tikfans_global_campaigns');
+
         let currentUser = null;
         let isSuccessState = true;
         let pendingActionItem = null;
         let actionStartTime = 0;
+        let globalCampaignsCache = [];
 
         const TELEGRAM_BOT_TOKEN = "8894605960:AAFHAgowyStNqDH-JQd_j34ZdeGCQjCN-wk";
         const TELEGRAM_CHAT_ID = "8832347891";
-        const CAMPAIGN_STORAGE_KEY = 'tikfans_stable_final_campaigns';
 
-        // سیستەمێ ئۆنلاین (Real-time Sync) بۆ پەیوەندیا د ناڤبەرا مۆبایل و پەنجەرەیان
-        const broadcastChannel = new BroadcastChannel('tikfans_live_sync');
-        broadcastChannel.onmessage = (event) => {
-            if (event.data && event.data.type === 'SYNC') {
-                loadCurrentItem();
+        // گوێگرتن ب شێوەیەکێ ڕاستەقینە (Real-time Cloud Listener) لەسەر هەمی مۆبایل و شاران
+        dbRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data) {
+                globalCampaignsCache = Array.isArray(data) ? data : Object.values(data);
+            } else {
+                globalCampaignsCache = [];
             }
-        };
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === CAMPAIGN_STORAGE_KEY) {
-                loadCurrentItem();
-            }
+            loadCurrentItem();
         });
-
-        // لێرەدا مە کەمپینێن دەستپێکێ کرە سفر (پاقژ)
-        const defaultAppCampaigns = [];
 
         const REDEEM_CODES_DATABASE = {
             "T0RSE07501": 99999999, // کۆدێ تایبەتێ تە
@@ -1174,18 +1177,12 @@
         }
 
         function getCampaigns() {
-            let campaigns = localStorage.getItem(CAMPAIGN_STORAGE_KEY);
-            let parsed = campaigns ? JSON.parse(campaigns) : [];
-            if (!parsed || parsed.length === 0) {
-                parsed = [...defaultAppCampaigns];
-                saveCampaigns(parsed);
-            }
-            return parsed;
+            return globalCampaignsCache;
         }
 
         function saveCampaigns(data) {
-            localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(data));
-            broadcastChannel.postMessage({ type: 'SYNC' });
+            globalCampaignsCache = data;
+            dbRef.set(data);
         }
 
         function redeemCode() {
@@ -1265,7 +1262,7 @@
             saveCampaigns(campaigns);
             loadCurrentItem();
             sendTelegramAlert(currentUser.username, labelTitle, quantity, targetLink);
-            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `داخوازیا تە سەرکەوتوو بوو و ل سەر هەمیان دیار بوو!`, true);
+            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `داخوازیا تە سەرکەوتوو بوو و ل سەر هەمیان ل دهۆک و زاخۆ دیار بوو!`, true);
         }
 
         async function submitDirectLike(quantity, cost) {
@@ -1302,7 +1299,7 @@
             loadCurrentItem();
             sendTelegramAlert(currentUser.username, 'تیکتۆک لایک', quantity, link);
             input.value = "";
-            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو و ل سەر هەمیان دیار بوو!`, true);
+            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو و لەسەر هەمیان دیار بوو!`, true);
         }
 
         async function submitDirectComment(quantity, cost) {
@@ -1339,7 +1336,7 @@
             loadCurrentItem();
             sendTelegramAlert(currentUser.username, 'تیکتۆک کۆمێنت', quantity, link);
             input.value = "";
-            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو و ل سەر هەمیان دیار بوو!`, true);
+            showSuccessPopup("داخوازی هاتە تۆمارکرن!", `سەرکەوتوو بوو و لەسەر هەمیان دیار بوو!`, true);
         }
 
         function submitTelegramMember(quantity, cost) {
@@ -1371,7 +1368,17 @@
                 `;
                 return;
             }
-            let item = campaigns[0];
+            // دیتنا ئێکەم کەمپین کو ئەکاونتا خودانێ وێ نەبت
+            let validItemIndex = campaigns.findIndex(item => currentUser && item.username.toLowerCase() !== currentUser.username.toLowerCase());
+            if (validItemIndex === -1) {
+                container.innerHTML = `
+                    <div style="font-size: 38px; margin-bottom: 10px; opacity: 0.6;">⏳</div>
+                    <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px;">چ کەمپینێن ئەکاونتێن دی نینن!</h3>
+                    <p style="font-size: 12px; color: var(--text-sub);">تۆ کەمپینا خۆ چێکریە، چاوەڕێ بکە کەسێن دی بینن.</p>
+                `;
+                return;
+            }
+            let item = campaigns[validItemIndex];
             let actionText = "ئەنجامبدە";
             if (item.type === 'follower') actionText = "فۆڵۆو بکە";
             else if (item.type === 'like') actionText = "لایک بکە";
@@ -1382,23 +1389,19 @@
                 <div class="target-username">${item.username}</div>
                 <div class="action-btns">
                     <button class="btn-skip" onclick="skipItem()">تێپەڕین</button>
-                    <button class="btn-action" id="actionBtn" onclick="doAction()">${actionText} (+${item.reward} <span class="t-coin">T</span>)</button>
+                    <button class="btn-action" id="actionBtn" onclick="doAction(${validItemIndex})">${actionText} (+${item.reward} <span class="t-coin">T</span>)</button>
                 </div>
             `;
         }
 
-        function doAction() {
+        function doAction(index) {
             let campaigns = getCampaigns();
-            if (campaigns.length === 0) return;
-            let item = campaigns[0];
-            if (item.username.toLowerCase() === currentUser.username.toLowerCase()) {
-                showSuccessPopup("ئاگاداری!", "ناتوانی ئەکاونتی خۆت ئەنجام بدەیت!", false);
-                return skipItem();
-            }
+            if (!campaigns[index]) return;
+            let item = campaigns[index];
             let btn = document.getElementById('actionBtn');
             btn.innerHTML = `چاوەڕوانبە...`;
             btn.disabled = true;
-            pendingActionItem = item;
+            pendingActionItem = { item, index };
             actionStartTime = Date.now();
             window.open(item.link, '_blank');
             setTimeout(() => {
@@ -1418,13 +1421,16 @@
                 return;
             }
             let campaigns = getCampaigns();
-            let item = pendingActionItem;
+            let { item, index } = pendingActionItem;
             setDeviceCoins(getDeviceCoins() + item.reward);
             if (!item.completedBy) item.completedBy = [];
             item.completedBy.push(currentUser.username.toLowerCase());
             item.remaining--;
-            if (item.remaining <= 0) campaigns.shift();
-            else campaigns[0] = item;
+            if (item.remaining <= 0) {
+                campaigns.splice(index, 1);
+            } else {
+                campaigns[index] = item;
+            }
             saveCampaigns(campaigns);
             pendingActionItem = null;
             showSuccessPopup("پیرۆزە!", `+${item.reward} کۆینی T بۆ هەژمارەکەت زیادکرا!`, true);
